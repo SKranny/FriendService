@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/friendship")
 public class FriendshipController {
 
     @Autowired
@@ -18,7 +18,7 @@ public class FriendshipController {
 
     private FriendshipMapper friendshipMapper;
 
-    @GetMapping("/friendship/{id}")
+    @GetMapping("/{id}")
     public FriendshipDTO get(@PathVariable long id) {
         Optional<Friendship> optionalTask = friendshipRepository.findById(id);
         if (!optionalTask.isPresent()) {
