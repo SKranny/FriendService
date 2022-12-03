@@ -2,15 +2,15 @@ server:
   port: 8080
 spring:
   datasource:
-    password:
-    username:
-    url: jdbc:postgresql://localhost:5432/mydb
+    password: ${DB_PASSWORD}
+    username: postgres
+    url: jdbc:postgresql://localhost:5432/friend-service
     driver-class-name: org.postgresql.Driver
-flyway:
-  baseline-on-migrate: true
   jpa:
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQL10Dialect
     hibernate:
       ddl-auto: create-drop
       default_schema: friend_service
+jwt:
+  secret-code: ${SECRET_KEY}
