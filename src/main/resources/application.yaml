@@ -1,6 +1,8 @@
 server:
-  port: 8080
+  port: ${SERVER_PORT:8085}
 spring:
+  application:
+    name: friend-service
   datasource:
     password: ${DB_PASSWORD}
     username: postgres
@@ -14,3 +16,8 @@ spring:
       default_schema: friend_service
 jwt:
   secret-code: ${SECRET_KEY}
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://localhost:8081/eureka}

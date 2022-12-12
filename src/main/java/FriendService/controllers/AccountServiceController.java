@@ -19,25 +19,4 @@ public class AccountServiceController {
         return accountService.postMewAccount(account).toString();
     }
 
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// public ResponseEntity EditAcc(@RequestBody Account account) {
-//accountRepository.save(account);
-
-//return ResponseEntity.status(HttpStatus.OK).body("все ок");

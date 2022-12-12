@@ -5,9 +5,8 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient(value = "AccountService", url = "http://localhost:8081/api/v1")
+@FeignClient("auth-service/api/v1/auth")
 public interface AccountService {
-
     @PostMapping("/account")
-    public String postMewAccount(@RequestBody Account account);
+    String postMewAccount(@RequestBody Account account);
 }
