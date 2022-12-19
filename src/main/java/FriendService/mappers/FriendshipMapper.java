@@ -5,7 +5,8 @@ import FriendService.model.Friendship;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
-@Mapper
+@Mapper(componentModel = "spring",
+        uses = {FriendshipStatusMapper.class})
 public interface FriendshipMapper {
 
     FriendshipMapper INSTANCE = Mappers.getMapper(FriendshipMapper.class);
