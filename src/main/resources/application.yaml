@@ -1,23 +1,24 @@
 server:
-  port: ${SERVER_PORT:8085}
+  port: ${SERVER_PORT:8086}
 spring:
   application:
     name: friend-service
   datasource:
     password: ${DB_PASSWORD}
     username: postgres
-    url: jdbc:postgresql://localhost:5432/friend-service
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/friend-service}
     driver-class-name: org.postgresql.Driver
   jpa:
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQL10Dialect
     hibernate:
-      ddl-auto: create-drop
-      default_schema: friend_service
+      ddl-auto: none
 jwt:
   secret-code: ${SECRET_KEY}
 
 eureka:
+  instance:
+    lease-expiration-duration-in-seconds: 30
   client:
     serviceUrl:
       defaultZone: ${EUREKA_URI:http://localhost:8081/eureka}

@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS friend_service.friendship(
+CREATE TABLE IF NOT EXISTS friendship (
     id                         BIGSERIAL,
     status_id                  BIGINT NOT NULL,
     src_person_id              BIGINT NOT NULL,
@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS friend_service.friendship(
 
 CREATE TYPE CODE AS ENUM ('REQUEST', 'FRIEND', 'BLOCKED', 'DECLINED', 'SUBSCRIBED');
 
-CREATE TABLE IF NOT EXISTS friend_service.friendship_status(
+CREATE TABLE IF NOT EXISTS friendship_status(
     id                          BIGSERIAL,
     "time"                      DATE NOT NULL,
     name                        TEXT COLLATE pg_catalog."default" NOT NULL,
