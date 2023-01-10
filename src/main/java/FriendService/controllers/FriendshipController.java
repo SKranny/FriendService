@@ -5,6 +5,7 @@ import FriendService.mappers.FriendshipMapper;
 import FriendService.model.Friendship;
 import FriendService.repositories.FriendshipRepository;
 import FriendService.security.LoginRequest;
+import FriendService.services.FriendService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -14,34 +15,75 @@ import javax.validation.Valid;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/v1/friendship")
+@RequestMapping("/api/v1/friends")
 @RequiredArgsConstructor
 @Tag(name="Friend Service", description="Работа с сервисом друзей")
 public class FriendshipController {
 
-    private final FriendshipRepository friendshipRepository;
-    private final FriendshipMapper friendshipMapper;
+    private final FriendService friendService;
 
-    @PostMapping("/test")
-    @Operation(summary = "Тестовый запрос")
-    public String login(@Valid @RequestBody LoginRequest request) {
-        return "testtest";
+    @PutMapping("/{id}/approve")
+    @Operation(summary = "Подтверждение дружбы")
+    public void approveFriendRequest(@PathVariable Long id){
+        friendService.approveFriendRequest(id);
     }
 
-    @GetMapping("/{id}")
-    @Operation(summary = "Получение друга по Id")
-    public FriendshipDTO get(@PathVariable long id) {
-        Optional<Friendship> optionalTask = friendshipRepository.findById(id);
-        if (!optionalTask.isPresent()) {
-            return friendshipMapper.toDTO(new Friendship());
-        }
-        return friendshipMapper.toDTO(optionalTask.get());
+    @PutMapping("/block/{id}")
+    @Operation(summary = "Блокировка друга")
+    public void blockFriend(@PathVariable Long id){
+        friendService.blockFriend(id);
     }
 
-    @PostMapping("/friendships")
-    @Operation(summary = "Получение списка друзей")
-    public FriendshipDTO post(@RequestBody Friendship friendship) {
-        Friendship newFriendship = friendshipRepository.save(friendship);
-        return friendshipMapper.toDTO(newFriendship);
+    @PostMapping("/{id}/request")
+    @Operation(summary = "Добавление друга")
+    public void sendFriendshipRequest(@RequestBody FriendshipDTO friendshipDTO){
+        friendService.sendFriendshipRequest(friendshipDTO);
     }
+
+
+    @PutMapping("/subscribe/{id}")
+    @Operation(summary = "Подписка")
+    public void subscribe(@PathVariable Long id){
+        friendService.subscribe(id);
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Удаление друга")
+    public void delete(@PathVariable Long id){
+        friendService.delete(id);
+    }
+
+
+/*    @GetMapping
+    @ResponseBody
+    public List<FriendshipDTO> getAllFriends(){
+        return friendService.getAllFriends();
+    }*/
+
+    /*
+     @GetMapping("/count")
+    public ResponseEntity getFriendCount(){
+        return friendService.getFriendCount;
+    }
+
+     @GetMapping("/blockFriendId")
+    public ResponseEntity getBlockFriendId(){
+        return friendService.getBlockFriendId;
+    }
+
+     @GetMapping("/{id}")
+    public Person getFriendById(@PathVariable Long id){
+        return friendService.getFriendById;
+    }
+
+    @GetMapping("/recommendations")
+    public ResponseEntity getRecommendations(){
+        return friendService.getRecommendations;
+    }
+
+    @GetMapping("/friendId")
+    public ResponseEntity getFriendId(){
+        return friendService.getFriendId;
+    }
+    */
 }
