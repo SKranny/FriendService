@@ -5,7 +5,7 @@ values (1, 1, 1),
        (4, 4, 4),
        (5, 5, 5);
 
-insert into friendship_status (time, name, friendship_status)
+insert into friendship_status (time, name, status_code)
 values ('2000-01-01', 'Gandalf', 'REQUEST'),
        ('2000-02-02', 'Frodo', 'FRIEND'),
        ('2000-03-03', 'Aragorn', 'BLOCKED'),

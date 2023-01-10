@@ -3,24 +3,30 @@ package FriendService.model;
 import FriendService.constants.FriendshipStatusCode;
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
 
-@Entity
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
+@Entity
+@Table(name = "friendship_status")
 public class FriendshipStatus {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "fstatus_id_gen")
+    @SequenceGenerator(name = "fstatus_id_gen", sequenceName = "fstatus_id_seq", allocationSize = 1)
+    @Column(name = "id")
     private Long id;
+
     private Date time;
+
     private String name;
-    private FriendshipStatusCode code;
+
+    @Enumerated(EnumType.STRING)
+    private FriendshipStatusCode statusCode;
 
 }
+
