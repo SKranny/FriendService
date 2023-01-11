@@ -38,8 +38,7 @@ public class FriendService {
     public void blockFriend(Long id){
         friendshipRepository.findById(id)
                 .flatMap(f -> friendshipStatusRepository.findById(f.getStatusId()))
-                .filter(s -> s.getStatusCode() != FriendshipStatusCode.BLOCKED)
-                .or(() -> {throw new FriendshipException("The user is already blocked", HttpStatus.BAD_REQUEST);})
+                .or(() -> {throw new FriendshipException("The user doesn't exist", HttpStatus.BAD_REQUEST);})
                 .map(s -> {
                     s.setStatusCode(FriendshipStatusCode.BLOCKED);
                     return s;
@@ -50,7 +49,7 @@ public class FriendService {
     public void subscribe(Long id){
         friendshipRepository.findById(id)
                 .flatMap(f -> friendshipStatusRepository.findById(f.getStatusId()))
-                .or(() -> {throw new FriendshipException("The user is already blocked", HttpStatus.BAD_REQUEST);})
+                .or(() -> {throw new FriendshipException("The user doesn't exist", HttpStatus.BAD_REQUEST);})
                 .map(s -> {
                     s.setStatusCode(FriendshipStatusCode.SUBSCRIBED);
                     return s;
