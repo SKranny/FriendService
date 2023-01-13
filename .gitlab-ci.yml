@@ -62,7 +62,7 @@ build_and_push_image:
     before_script:
         - docker login -u $DOCKER_LOGIN -p $DOCKER_PASS docker.io
     script:
-        - docker build --no-cache -t $DOCKER_LOGIN/friend-service:latest .
+        - docker build -t $DOCKER_LOGIN/friend-service:latest .
         - docker push $DOCKER_LOGIN/friend-service:latest
 
 
