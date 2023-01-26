@@ -62,9 +62,6 @@ public class FriendService {
     public void subscribe(Long id) {
         friendshipRepository.findById(id)
                 .flatMap(f -> friendshipStatusRepository.findById(f.getStatusId()))
-                .or(() -> {
-                    throw new FriendshipException("The user doesn't exist", HttpStatus.BAD_REQUEST);
-                })
                 .map(s -> {
                     s.setStatusCode(SUBSCRIBED);
                     return s;
@@ -87,17 +84,19 @@ public class FriendService {
     public void sendFriendshipRequest(Principal principal, Long id) {
         PersonDTO srcUser = personService.getPersonDTOByEmail(principal.getName());
         PersonDTO dstUser = personService.getPersonById(id);
-        FriendshipStatus friendshipStatus = new FriendshipStatus();
-        friendshipStatus.setTime(new Date());
-        friendshipStatus.setName(dstUser.getFirstName() + " " + dstUser.getLastName());
-        friendshipStatus.setStatusCode(REQUEST);
+        FriendshipStatus friendshipStatus = FriendshipStatus.builder()
+                .time(new Date())
+                .name(dstUser.getFirstName() + " " + dstUser.getLastName())
+                .statusCode(REQUEST)
+                .build();
         friendshipStatusRepository.save(friendshipStatus);
-        Friendship friendship = new Friendship();
-        friendship.setStatusId(friendshipStatus.getId());
-        friendship.setDstPersonId(id);
-        friendship.setSrcPersonId(srcUser.getId());
+
+        Friendship friendship = Friendship.builder()
+                .statusId(friendshipStatus.getId())
+                .dstPersonId(id)
+                .srcPersonId(srcUser.getId())
+                .build();
         friendshipRepository.save(friendship);
-        friendshipStatusRepository.save(friendshipStatus);
     }
 
 

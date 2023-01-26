@@ -62,7 +62,7 @@ public class FriendshipController {
         return friendService.getFriendById(principal, accountId);
     }
 
-    @GetMapping("/friendId")
+    @GetMapping("/ids")
     @Operation(summary = "Получение id друзей")
     public List<Long> getFriendId(Principal principal){
         return friendService.getFriendId(principal);
@@ -74,21 +74,10 @@ public class FriendshipController {
         return friendService.getFriendCount(principal);
     }
 
-    @GetMapping("/blockFriendId")
+    @GetMapping("/ids/block")
     @Operation(summary = "Получение id заблокированных друзей")
     public List<Long> getBlockFriendId(Principal principal){
         return friendService.getBlockFriendId(principal);
     }
 
-
-
-
-
-
-/*
-    @GetMapping("/recommendations")
-    public ResponseEntity getRecommendations(){
-        return friendService.getRecommendations;
-    }
-    */
 }
