@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(description = "Сущность друга")
+@Schema(description = "Сущность дружбы")
 public class FriendshipDTO {
     @Schema(description = "Идентификатор")
     private Long id;

@@ -1,18 +1,15 @@
 package FriendService.controllers;
 
-import FriendService.dto.FriendshipDTO;
-import FriendService.mappers.FriendshipMapper;
-import FriendService.model.Friendship;
-import FriendService.repositories.FriendshipRepository;
-import FriendService.security.LoginRequest;
+import FriendService.dto.FriendDTO;
 import FriendService.services.FriendService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-import java.util.Optional;
+import java.security.Principal;
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/api/v1/friends")
@@ -36,12 +33,11 @@ public class FriendshipController {
 
     @PostMapping("/{id}/request")
     @Operation(summary = "Добавление друга")
-    public void sendFriendshipRequest(@RequestBody FriendshipDTO friendshipDTO){
-        friendService.sendFriendshipRequest(friendshipDTO);
+    public void sendFriendshipRequest(Principal principal, @PathVariable Long id){
+        friendService.sendFriendshipRequest(principal, id);
     }
 
-
-    @PutMapping("/subscribe/{id}")
+    @PostMapping("/subscribe/{id}")
     @Operation(summary = "Подписка")
     public void subscribe(@PathVariable Long id){
         friendService.subscribe(id);
@@ -53,37 +49,35 @@ public class FriendshipController {
         friendService.delete(id);
     }
 
-
-/*    @GetMapping
+    @GetMapping
     @ResponseBody
-    public List<FriendshipDTO> getAllFriends(){
-        return friendService.getAllFriends();
-    }*/
-
-    /*
-     @GetMapping("/count")
-    public ResponseEntity getFriendCount(){
-        return friendService.getFriendCount;
+    @Operation(summary = "Получение всех друзей")
+    public List<FriendDTO> getAllFriends(Principal principal){
+        return friendService.getAllFriends(principal);
     }
 
-     @GetMapping("/blockFriendId")
-    public ResponseEntity getBlockFriendId(){
-        return friendService.getBlockFriendId;
+    @GetMapping("{accountId}")
+    @Operation(summary = "Получение друга по id")
+    public FriendDTO getFriendById(Principal principal, @PathVariable Long accountId){
+        return friendService.getFriendById(principal, accountId);
     }
 
-     @GetMapping("/{id}")
-    public Person getFriendById(@PathVariable Long id){
-        return friendService.getFriendById;
+    @GetMapping("/ids")
+    @Operation(summary = "Получение id друзей")
+    public List<Long> getFriendId(Principal principal){
+        return friendService.getFriendId(principal);
     }
 
-    @GetMapping("/recommendations")
-    public ResponseEntity getRecommendations(){
-        return friendService.getRecommendations;
+    @GetMapping("/count")
+    @Operation(summary = "Получение количества друзей")
+    public Long getFriendCount(Principal principal){
+        return friendService.getFriendCount(principal);
     }
 
-    @GetMapping("/friendId")
-    public ResponseEntity getFriendId(){
-        return friendService.getFriendId;
+    @GetMapping("/ids/block")
+    @Operation(summary = "Получение id заблокированных друзей")
+    public List<Long> getBlockFriendId(Principal principal){
+        return friendService.getBlockFriendId(principal);
     }
-    */
+
 }
