@@ -13,6 +13,10 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQL10Dialect
     hibernate:
       ddl-auto: none
+  kafka:
+    consumer:
+      group-id: friend-service-id
+    bootstrap-servers: ${KAFKA_HOST:localhost:9092}
 jwt:
   secret-code: ${SECRET_KEY}
 
