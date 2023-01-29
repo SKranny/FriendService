@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import security.TokenAuthentication;
 
 import java.security.Principal;
 import java.util.List;
@@ -33,8 +34,8 @@ public class FriendshipController {
 
     @PostMapping("/{id}/request")
     @Operation(summary = "Добавление друга")
-    public void sendFriendshipRequest(Principal principal, @PathVariable Long id){
-        friendService.sendFriendshipRequest(principal, id);
+    public void sendFriendshipRequest(TokenAuthentication authentication, @PathVariable Long id){
+        friendService.sendFriendshipRequest(authentication.getTokenData().getEmail(), id);
     }
 
     @PostMapping("/subscribe/{id}")
@@ -52,32 +53,32 @@ public class FriendshipController {
     @GetMapping
     @ResponseBody
     @Operation(summary = "Получение всех друзей")
-    public List<FriendDTO> getAllFriends(Principal principal){
-        return friendService.getAllFriends(principal);
+    public List<FriendDTO> getAllFriends(TokenAuthentication authentication){
+        return friendService.getAllFriends(authentication.getTokenData().getEmail());
     }
 
     @GetMapping("{accountId}")
     @Operation(summary = "Получение друга по id")
-    public FriendDTO getFriendById(Principal principal, @PathVariable Long accountId){
-        return friendService.getFriendById(principal, accountId);
+    public FriendDTO getFriendById(TokenAuthentication authentication, @PathVariable Long accountId){
+        return friendService.getFriendById(authentication.getTokenData().getEmail(), accountId);
     }
 
     @GetMapping("/ids")
     @Operation(summary = "Получение id друзей")
-    public List<Long> getFriendId(Principal principal){
-        return friendService.getFriendId(principal);
+    public List<Long> getFriendId(TokenAuthentication authentication){
+        return friendService.getFriendId(authentication.getTokenData().getEmail());
     }
 
     @GetMapping("/count")
     @Operation(summary = "Получение количества друзей")
-    public Long getFriendCount(Principal principal){
-        return friendService.getFriendCount(principal);
+    public Long getFriendCount(TokenAuthentication authentication){
+        return friendService.getFriendCount(authentication.getTokenData().getEmail());
     }
 
     @GetMapping("/ids/block")
     @Operation(summary = "Получение id заблокированных друзей")
-    public List<Long> getBlockFriendId(Principal principal){
-        return friendService.getBlockFriendId(principal);
+    public List<Long> getBlockFriendId(TokenAuthentication authentication){
+        return friendService.getBlockFriendId(authentication.getTokenData().getEmail());
     }
 
 }

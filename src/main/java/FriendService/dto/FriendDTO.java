@@ -1,7 +1,6 @@
 package FriendService.dto;
 
 import FriendService.constants.FriendshipStatusCode;
-import constants.StatusCode;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

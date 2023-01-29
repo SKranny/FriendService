@@ -9,7 +9,5 @@ import java.util.List;
 @Repository
 public interface FriendshipRepository extends JpaRepository<Friendship, Long> {
     List<Friendship> findBySrcPersonId(Long Long);
-
-    Friendship findByDstPersonId(Long Long);
 }
 

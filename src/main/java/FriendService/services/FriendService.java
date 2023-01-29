@@ -30,7 +30,6 @@ public class FriendService {
     private final FriendshipRepository friendshipRepository;
     private final FriendshipStatusRepository friendshipStatusRepository;
     private final PersonService personService;
-    private final FriendshipMapper friendshipMapper;
 
     public void approveFriendRequest(Long id) {
         friendshipRepository.findById(id)
@@ -81,8 +80,8 @@ public class FriendService {
     }
 
     @Transactional
-    public void sendFriendshipRequest(Principal principal, Long id) {
-        PersonDTO srcUser = personService.getPersonDTOByEmail(principal.getName());
+    public void sendFriendshipRequest(String email, Long id) {
+        PersonDTO srcUser = personService.getPersonDTOByEmail(email);
         PersonDTO dstUser = personService.getPersonById(id);
         FriendshipStatus friendshipStatus = FriendshipStatus.builder()
                 .time(new Date())
@@ -100,8 +99,8 @@ public class FriendService {
     }
 
 
-    public List<FriendDTO> getAllFriends(Principal principal) {
-        PersonDTO srcUser = personService.getPersonDTOByEmail(principal.getName());
+    public List<FriendDTO> getAllFriends(String email) {
+        PersonDTO srcUser = personService.getPersonDTOByEmail(email);
         return friendshipRepository.findBySrcPersonId(srcUser.getId())
                 .stream()
                 .filter(friendship ->
@@ -122,8 +121,8 @@ public class FriendService {
 
     }
 
-    public Long getFriendCount(Principal principal){
-        PersonDTO srcUser = personService.getPersonDTOByEmail(principal.getName());
+    public Long getFriendCount(String email){
+        PersonDTO srcUser = personService.getPersonDTOByEmail(email);
         return friendshipRepository.findBySrcPersonId(srcUser.getId())
                 .stream()
                 .filter( friendship ->
@@ -132,8 +131,8 @@ public class FriendService {
                 .count();
     }
 
-    public List<Long> getBlockFriendId(Principal principal){
-        PersonDTO srcUser = personService.getPersonDTOByEmail(principal.getName());
+    public List<Long> getBlockFriendId(String email){
+        PersonDTO srcUser = personService.getPersonDTOByEmail(email);
         return friendshipRepository.findBySrcPersonId(srcUser.getId())
                 .stream()
                 .filter(friendship ->
@@ -146,8 +145,8 @@ public class FriendService {
 
     }
 
-    public List<Long> getFriendId(Principal principal){
-        PersonDTO srcUser = personService.getPersonDTOByEmail(principal.getName());
+    public List<Long> getFriendId(String email){
+        PersonDTO srcUser = personService.getPersonDTOByEmail(email);
         return friendshipRepository.findBySrcPersonId(srcUser.getId())
                 .stream()
                 .filter(friendship ->
@@ -159,8 +158,8 @@ public class FriendService {
                 .collect(Collectors.toList());
     }
 
-    public FriendDTO getFriendById(Principal principal, Long id){
-        PersonDTO srcUser = personService.getPersonDTOByEmail(principal.getName());
+    public FriendDTO getFriendById(String email, Long id){
+        PersonDTO srcUser = personService.getPersonDTOByEmail(email);
         PersonDTO dstUser = personService.getPersonById(id);
         return friendshipRepository.findBySrcPersonId(srcUser.getId())
                 .stream()
