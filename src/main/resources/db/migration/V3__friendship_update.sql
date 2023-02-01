@@ -1,1 +1,0 @@
-CREATE SEQUENCE fstatus_id_seq;
