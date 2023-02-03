@@ -2,20 +2,22 @@ package FriendService.services;
 
 import FriendService.constants.FriendshipStatusCode;
 import FriendService.dto.FriendDTO;
+import FriendService.dto.FriendsNotificationRequest;
 import FriendService.feign.PersonService;
-import FriendService.mappers.FriendshipMapper;
+import dto.notification.ContentDTO;
 import dto.userDto.PersonDTO;
 import FriendService.exceptions.FriendshipException;
 import FriendService.model.Friendship;
 import FriendService.model.FriendshipStatus;
 import FriendService.repositories.FriendshipRepository;
 import FriendService.repositories.FriendshipStatusRepository;
+import kafka.annotation.SubmitToKafka;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.security.Principal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -96,6 +98,7 @@ public class FriendService {
                 .srcPersonId(srcUser.getId())
                 .build();
         friendshipRepository.save(friendship);
+        createNotification(friendship);
     }
 
 
@@ -178,6 +181,18 @@ public class FriendService {
                             friendshipStatusRepository.findById(friendship.getStatusId()).get().getStatusCode());
                 }).orElseThrow(() ->  new FriendshipException ("Friendship doesn't exist", HttpStatus.BAD_REQUEST));
 
+    }
+
+    @SubmitToKafka(topic = "Friends")
+    private FriendsNotificationRequest createNotification(Friendship friendship){
+        return FriendsNotificationRequest.builder()
+                .srcPersonId(friendship.getSrcPersonId())
+                .dstPersonId(friendship.getDstPersonId())
+                .content(ContentDTO.builder()
+                        .text("")
+                        .attaches(new ArrayList<>())
+                        .build())
+                .build();
     }
 
 }
