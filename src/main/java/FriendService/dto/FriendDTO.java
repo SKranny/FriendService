@@ -21,6 +21,7 @@ public class FriendDTO {
     private String lastName;
     private LocalDate birthDate;
     private boolean isOnline;
+    private String address;
     private FriendshipStatusCode statusCode;
 
 }
