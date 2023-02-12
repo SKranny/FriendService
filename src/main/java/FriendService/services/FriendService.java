@@ -1,6 +1,7 @@
 package FriendService.services;
 
 import FriendService.dto.FriendDTO;
+import FriendService.dto.FriendNameDTO;
 import FriendService.feign.PersonService;
 import dto.userDto.PersonDTO;
 import FriendService.exceptions.FriendshipException;
@@ -108,6 +109,8 @@ public class FriendService {
                 .collect(Collectors.toList());
     }
 
+
+
     public Long getFriendCount(String email){
         PersonDTO srcUser = personService.getPersonDTOByEmail(email);
         return friendshipRepository.findByFriendshipStatusAndSrcId(FRIEND.toString(), srcUser.getId())
@@ -145,6 +148,41 @@ public class FriendService {
                 dstUser.getIsOnline(),
                 FRIEND
         );
+
+    }
+
+    public List<FriendNameDTO> getRequests(String email){
+        PersonDTO srcUser = personService.getPersonDTOByEmail(email);
+        return friendshipRepository.findByStatusAndDstId(REQUEST.toString(), srcUser.getId())
+                .stream()
+                .map(friendship -> {
+                    PersonDTO friend = personService.getPersonById(friendship.getDstPersonId());
+                    return new FriendNameDTO(friend.getFirstName(), friend.getLastName());
+                })
+                .collect(Collectors.toList());
+    }
+
+    public List<FriendNameDTO> getMyRequests(String email){
+        PersonDTO srcUser = personService.getPersonDTOByEmail(email);
+        return friendshipRepository.findByStatusAndSrcId(REQUEST.toString(), srcUser.getId())
+                .stream()
+                .map(friendship -> {
+                    PersonDTO friend = personService.getPersonById(friendship.getDstPersonId());
+                    return new FriendNameDTO(friend.getFirstName(), friend.getLastName());
+                })
+                .collect(Collectors.toList());
+    }
+
+    public void cancelMyFriendRequest(Long id, String email){
+        PersonDTO srcUser = personService.getPersonDTOByEmail(email);
+        Friendship friendship = friendshipRepository.findByFriendshipStatusDstIdSrcId(REQUEST.toString(), id, srcUser.getId());
+        friendshipRepository.delete(friendship);
+    }
+
+    public void cancelFriendRequest(Long id, String email){
+        PersonDTO srcUser = personService.getPersonDTOByEmail(email);
+        Friendship friendship = friendshipRepository.findByFriendshipStatusDstIdSrcId(REQUEST.toString(), srcUser.getId(), id);
+        friendshipRepository.delete(friendship);
 
     }
 

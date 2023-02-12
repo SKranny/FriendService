@@ -9,7 +9,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface FriendshipStatusRepository extends JpaRepository<FriendshipStatus, Long> {
 
-    @Query(value = "SELECT f FROM friendship_status f WHERE f.id = :id AND friendship_status.statusCode = :statusCode", nativeQuery = true)
+    @Query(value = "SELECT f FROM friendship_status f WHERE f.id = :id AND friendship_status.statusCode = :statusCode",
+            nativeQuery = true)
     FriendshipStatus findByIdandStatusCode(@Param("id") Long id, @Param("statusCode") String statusCode);
 }
 
