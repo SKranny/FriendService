@@ -113,7 +113,7 @@ public class FriendService {
 
     public Long getFriendCount(String email){
         PersonDTO srcUser = personService.getPersonDTOByEmail(email);
-        return friendshipRepository.findByFriendshipStatusAndSrcId(FRIEND.toString(), srcUser.getId())
+        return friendshipRepository.findByStatusAndDstId(REQUEST.toString(), srcUser.getId())
                 .stream()
                 .count();
     }
