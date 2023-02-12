@@ -175,15 +175,20 @@ public class FriendService {
 
     public void cancelMyFriendRequest(Long id, String email){
         PersonDTO srcUser = personService.getPersonDTOByEmail(email);
-        Friendship friendship = friendshipRepository.findByFriendshipStatusDstIdSrcId(REQUEST.toString(), id, srcUser.getId());
+        Friendship friendship = friendshipRepository
+                .findByFriendshipStatusDstIdSrcId(REQUEST.toString(), id, srcUser.getId());
+        FriendshipStatus friendshipStatus = friendshipStatusRepository.findById(friendship.getStatusId()).get();
         friendshipRepository.delete(friendship);
+        friendshipStatusRepository.delete(friendshipStatus);
     }
 
     public void cancelFriendRequest(Long id, String email){
         PersonDTO srcUser = personService.getPersonDTOByEmail(email);
-        Friendship friendship = friendshipRepository.findByFriendshipStatusDstIdSrcId(REQUEST.toString(), srcUser.getId(), id);
+        Friendship friendship = friendshipRepository
+                .findByFriendshipStatusDstIdSrcId(REQUEST.toString(), srcUser.getId(), id);
+        FriendshipStatus friendshipStatus = friendshipStatusRepository.findById(friendship.getStatusId()).get();
         friendshipRepository.delete(friendship);
-
+        friendshipStatusRepository.delete(friendshipStatus);
     }
 
 }

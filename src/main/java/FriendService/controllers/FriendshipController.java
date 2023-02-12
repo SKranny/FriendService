@@ -93,13 +93,13 @@ public class FriendshipController {
         return friendService.getMyRequests(authentication.getTokenData().getEmail());
     }
 
-    @PutMapping("/{id}/cancelmyrequest")
+    @DeleteMapping("/{id}/cancelmyrequest")
     @Operation(summary = "Отмена исходящей заявки")
     public void cancelMyFriendRequest(@PathVariable Long id, TokenAuthentication authentication){
         friendService.cancelMyFriendRequest(id, authentication.getTokenData().getEmail());
     }
 
-    @PutMapping("/{id}/cancelrequest")
+    @DeleteMapping("/{id}/cancelrequest")
     @Operation(summary = "Отмена входящей заявки")
     public void cancelFriendRequest(@PathVariable Long id, TokenAuthentication authentication){
         friendService.cancelFriendRequest(id, authentication.getTokenData().getEmail());
