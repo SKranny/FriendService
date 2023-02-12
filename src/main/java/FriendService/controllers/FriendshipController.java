@@ -83,13 +83,13 @@ public class FriendshipController {
 
     @GetMapping("/requests")
     @Operation(summary = "Получение входящих заявок в друзья")
-    public List<FriendNameDTO> getRequests(TokenAuthentication authentication){
+    public List<FriendDTO> getRequests(TokenAuthentication authentication){
         return friendService.getRequests(authentication.getTokenData().getEmail());
     }
 
     @GetMapping("/myrequests")
     @Operation(summary = "Получение исходящих заявок в друзья")
-    public List<FriendNameDTO> getMyRequests(TokenAuthentication authentication){
+    public List<FriendDTO> getMyRequests(TokenAuthentication authentication){
         return friendService.getMyRequests(authentication.getTokenData().getEmail());
     }
 

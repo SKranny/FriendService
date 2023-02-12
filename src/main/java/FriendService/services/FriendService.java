@@ -104,6 +104,7 @@ public class FriendService {
                             friend.getLastName(),
                             friend.getBirthDay(),
                             friend.getIsOnline(),
+                            friend.getAddress(),
                             friendshipStatusRepository.findById(friendship.getStatusId()).get().getStatusCode());
                 })
                 .collect(Collectors.toList());
@@ -146,29 +147,32 @@ public class FriendService {
                 dstUser.getLastName(),
                 dstUser.getBirthDay(),
                 dstUser.getIsOnline(),
-                FRIEND
+                dstUser.getAddress(),
+                friendshipStatusRepository.findById(friendship.getStatusId()).get().getStatusCode()
         );
 
     }
 
-    public List<FriendNameDTO> getRequests(String email){
+    public List<FriendDTO> getRequests(String email){
         PersonDTO srcUser = personService.getPersonDTOByEmail(email);
         return friendshipRepository.findByStatusAndDstId(REQUEST.toString(), srcUser.getId())
                 .stream()
                 .map(friendship -> {
                     PersonDTO friend = personService.getPersonById(friendship.getDstPersonId());
-                    return new FriendNameDTO(friend.getFirstName(), friend.getLastName());
+                    return new FriendDTO(friend.getId(), friend.getPhoto(), friend.getFirstName(), friend.getLastName(),
+                            friend.getBirthDay(), friend.getIsOnline(), friend.getAddress(), REQUEST);
                 })
                 .collect(Collectors.toList());
     }
 
-    public List<FriendNameDTO> getMyRequests(String email){
+    public List<FriendDTO> getMyRequests(String email){
         PersonDTO srcUser = personService.getPersonDTOByEmail(email);
         return friendshipRepository.findByStatusAndSrcId(REQUEST.toString(), srcUser.getId())
                 .stream()
                 .map(friendship -> {
                     PersonDTO friend = personService.getPersonById(friendship.getDstPersonId());
-                    return new FriendNameDTO(friend.getFirstName(), friend.getLastName());
+                    return new FriendDTO(friend.getId(), friend.getPhoto(), friend.getFirstName(), friend.getLastName(),
+                            friend.getBirthDay(), friend.getIsOnline(), friend.getAddress(), REQUEST);
                 })
                 .collect(Collectors.toList());
     }
