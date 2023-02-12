@@ -70,7 +70,7 @@ public class FriendshipController {
     }
 
     @GetMapping("/count")
-    @Operation(summary = "Получение количества друзей")
+    @Operation(summary = "Получение количества запросов в друзья")
     public Long getFriendCount(TokenAuthentication authentication){
         return friendService.getFriendCount(authentication.getTokenData().getEmail());
     }
