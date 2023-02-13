@@ -158,7 +158,7 @@ public class FriendService {
         return friendshipRepository.findByStatusAndDstId(REQUEST.toString(), srcUser.getId())
                 .stream()
                 .map(friendship -> {
-                    PersonDTO friend = personService.getPersonById(friendship.getDstPersonId());
+                    PersonDTO friend = personService.getPersonById(friendship.getSrcPersonId());
                     return new FriendDTO(friend.getId(), friend.getPhoto(), friend.getFirstName(), friend.getLastName(),
                             friend.getBirthDay(), friend.getIsOnline(), friend.getAddress(), REQUEST);
                 })
