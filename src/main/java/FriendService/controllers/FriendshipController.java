@@ -22,8 +22,8 @@ public class FriendshipController {
 
     @PutMapping("/{id}/approve")
     @Operation(summary = "Подтверждение дружбы")
-    public void approveFriendRequest(@PathVariable Long id){
-        friendService.approveFriendRequest(id);
+    public void approveFriendRequest(@PathVariable Long id, TokenAuthentication authentication){
+        friendService.approveFriendRequest(id, authentication.getTokenData().getEmail());
     }
 
     @PutMapping("/block/{id}")

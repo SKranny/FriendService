@@ -29,9 +29,10 @@ public class FriendService {
     private final FriendshipStatusRepository friendshipStatusRepository;
     private final PersonService personService;
 
-    public void approveFriendRequest(Long id) {
+    public void approveFriendRequest(Long id, String email) {
+        PersonDTO srcUser = personService.getPersonDTOByEmail(email);
         Optional <Friendship> friendship = Optional.ofNullable(friendshipRepository
-                .findByFriendshipStatusAndDstId(REQUEST.toString(), id));
+                .findByFriendshipStatusDstIdSrcId(REQUEST.toString(),id ,srcUser.getId()));
         Optional<FriendshipStatus> friendshipStatus = friendshipStatusRepository.findById(friendship.get().getStatusId());
         if (friendship.isPresent() && friendshipStatus.isPresent()) {
             friendshipStatus.get().setStatusCode(FRIEND);
