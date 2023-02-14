@@ -10,6 +10,7 @@ import FriendService.model.FriendshipStatus;
 import FriendService.repositories.FriendshipRepository;
 import FriendService.repositories.FriendshipStatusRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -31,13 +32,27 @@ public class FriendService {
 
     public void approveFriendRequest(Long id, String email) {
         PersonDTO srcUser = personService.getPersonDTOByEmail(email);
-        Optional <Friendship> friendship = Optional.ofNullable(friendshipRepository
-                .findByFriendshipStatusDstIdSrcId(REQUEST.toString(),id ,srcUser.getId()));
-        Optional<FriendshipStatus> friendshipStatus = friendshipStatusRepository.findById(friendship.get().getStatusId());
-        if (friendship.isPresent() && friendshipStatus.isPresent()) {
-            friendshipStatus.get().setStatusCode(FRIEND);
-            friendshipStatusRepository.save(friendshipStatus.get());
+        Optional<Friendship> friendship = getFriendship(REQUEST.toString(), id, srcUser.getId());
+        if (friendship.isPresent()) {
+            updateFriendship(friendship.get());
         } else throw new FriendshipException("No Friendship found with this user: " + friendship.get().getStatusId());
+        Optional<Friendship> friendship2 = getFriendship(REQUEST.toString(),srcUser.getId(), id);
+        friendship2.ifPresent(this::updateFriendship);
+    }
+
+    private void updateFriendship(Friendship friendship){
+        Optional<FriendshipStatus> fs = getFriendshipStatus(friendship.getStatusId());
+        fs.get().setStatusCode(FRIEND);
+        friendshipStatusRepository.save(fs.get());
+    }
+
+    private Optional<Friendship> getFriendship(String status, Long dstUserid, Long srcUserid ){
+        return Optional.ofNullable(friendshipRepository
+                .findByFriendshipStatusDstIdSrcId(status, dstUserid, srcUserid));
+    }
+
+    private Optional<FriendshipStatus> getFriendshipStatus(Long statusId){
+        return friendshipStatusRepository.findById(statusId);
     }
 
     public void subscribe(Long id) {
@@ -74,18 +89,31 @@ public class FriendService {
     @Transactional
     public void sendFriendshipRequest(String email, Long id) {
         PersonDTO srcUser = personService.getPersonDTOByEmail(email);
-        PersonDTO dstUser = personService.getPersonById(id);
+        Optional <Friendship> friendship = Optional.ofNullable(friendshipRepository
+                .findByFriendshipStatusDstIdSrcId(REQUEST.toString(),id ,srcUser.getId()));
+        if (friendship.isEmpty()){
+            PersonDTO dstUser = personService.getPersonById(id);
+            createFriendshipStatus(dstUser.getFirstName(), dstUser.getLastName(), srcUser.getId(), id);
+        } else throw new FriendshipException("You've already sent a request to the user", HttpStatus.BAD_REQUEST);
+
+    }
+
+    private void createFriendshipStatus(String firstName, String lastName, Long srcUserId, Long dstUserId){
         FriendshipStatus friendshipStatus = FriendshipStatus.builder()
                 .time(new Date())
-                .name(dstUser.getFirstName() + " " + dstUser.getLastName())
+                .name(firstName + " " + lastName)
                 .statusCode(REQUEST)
                 .build();
         friendshipStatusRepository.save(friendshipStatus);
+        createFriendship(friendshipStatus.getId(), srcUserId, dstUserId);
 
+    }
+
+    private void createFriendship(Long id, Long srcUserId, Long dstUserId){
         Friendship friendship = Friendship.builder()
-                .statusId(friendshipStatus.getId())
-                .dstPersonId(id)
-                .srcPersonId(srcUser.getId())
+                .statusId(id)
+                .dstPersonId(dstUserId)
+                .srcPersonId(srcUserId)
                 .build();
         friendshipRepository.save(friendship);
     }
@@ -110,8 +138,6 @@ public class FriendService {
                 })
                 .collect(Collectors.toList());
     }
-
-
 
     public Long getFriendCount(String email){
         PersonDTO srcUser = personService.getPersonDTOByEmail(email);
