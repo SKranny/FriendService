@@ -34,20 +34,18 @@ public class FriendService {
         PersonDTO srcUser = personService.getPersonDTOByEmail(email);
         Optional<Friendship> friendship = getFriendship(REQUEST.toString(), id, srcUser.getId());
         if (friendship.isPresent()) {
-            Optional<FriendshipStatus> friendshipStatus = getFriendshipStatus(friendship.get().getStatusId());
-            updateFriendship(friendshipStatus.get());
+            updateFriendship(friendship.get());
         } else throw new FriendshipException("No Friendship found with this user: " + friendship.get().getStatusId());
         Optional<Friendship> friendship2 = getFriendship(REQUEST.toString(),srcUser.getId(), id);
-        if (friendship2.isPresent()) {
-            Optional<FriendshipStatus> friendshipStatus2 = getFriendshipStatus(friendship.get().getStatusId());
-            updateFriendship(friendshipStatus2.get());
-        }
+        friendship2.ifPresent(this::updateFriendship);
     }
 
-    private void updateFriendship(FriendshipStatus fs){
-        fs.setStatusCode(FRIEND);
-        friendshipStatusRepository.save(fs);
+    private void updateFriendship(Friendship friendship){
+        Optional<FriendshipStatus> fs = getFriendshipStatus(friendship.getStatusId());
+        fs.get().setStatusCode(FRIEND);
+        friendshipStatusRepository.save(fs.get());
     }
+
     private Optional<Friendship> getFriendship(String status, Long dstUserid, Long srcUserid ){
         return Optional.ofNullable(friendshipRepository
                 .findByFriendshipStatusDstIdSrcId(status, dstUserid, srcUserid));
