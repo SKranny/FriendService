@@ -1,5 +1,6 @@
 package FriendService.services;
 
+import FriendService.constants.FriendshipStatusCode;
 import FriendService.dto.FriendDTO;
 import FriendService.dto.FriendNameDTO;
 import FriendService.feign.PersonService;
@@ -32,17 +33,50 @@ public class FriendService {
 
     public void approveFriendRequest(Long id, String email) {
         PersonDTO srcUser = personService.getPersonDTOByEmail(email);
-        Optional<Friendship> friendship = getFriendship(REQUEST.toString(), id, srcUser.getId());
+        Optional<Friendship> friendship = getFriendship(REQUEST.toString(), srcUser.getId(), id);
         if (friendship.isPresent()) {
-            updateFriendship(friendship.get());
+            updateFriendship(friendship.get(), FRIEND);
         } else throw new FriendshipException("No Friendship found with this user: " + friendship.get().getStatusId());
         Optional<Friendship> friendship2 = getFriendship(REQUEST.toString(),srcUser.getId(), id);
-        friendship2.ifPresent(this::updateFriendship);
+        if (friendship2.isPresent()) {
+            updateFriendship(friendship2.get(), FRIEND);
+        } else {
+            createFriendshipStatus(srcUser.getFirstName(), srcUser.getLastName(), srcUser.getId(), id, FRIEND);
+        }
     }
 
-    private void updateFriendship(Friendship friendship){
+    public void delete(Long id, String email) {
+        PersonDTO srsUser = personService.getPersonDTOByEmail(email);
+        Optional <Friendship> friendship = Optional.ofNullable(friendshipRepository
+                .findByFriendshipStatusDstIdSrcId(FRIEND.toString(), id, srsUser.getId()));
+        Optional <Friendship> friendship2 = Optional.ofNullable(friendshipRepository
+                .findByFriendshipStatusDstIdSrcId(FRIEND.toString(), srsUser.getId(), id));
+        if (friendship.isPresent()) {
+            deleteFriendship(friendship.get());
+            deleteFriendship(friendship2.get());
+        } else throw new FriendshipException("No Friendship found with this user: " + friendship.get().getStatusId());
+    }
+
+    private void deleteFriendship (Friendship friendship){
+        Optional<FriendshipStatus> friendshipStatus = friendshipStatusRepository.findById(friendship.getStatusId());
+        friendshipStatusRepository.delete(friendshipStatus.get());
+        friendshipRepository.delete(friendship);
+    }
+
+    public void blockFriend(String email, Long id) {
+        PersonDTO srcUser = personService.getPersonDTOByEmail(email);
+        Optional<Friendship> friendship = getFriendship(FRIEND.toString(), id, srcUser.getId());
+        if (friendship.isPresent()){
+            updateFriendship(friendship.get(), BLOCKED);
+            Optional<Friendship> friendship2 = getFriendship(FRIEND.toString(), srcUser.getId(), id);
+            deleteFriendship(friendship2.get());
+
+        } else throw new FriendshipException("No Friendship found with this user: " + friendship.get().getStatusId());
+    }
+
+    private void updateFriendship(Friendship friendship, FriendshipStatusCode fsCode){
         Optional<FriendshipStatus> fs = getFriendshipStatus(friendship.getStatusId());
-        fs.get().setStatusCode(FRIEND);
+        fs.get().setStatusCode(fsCode);
         friendshipStatusRepository.save(fs.get());
     }
 
@@ -65,27 +99,6 @@ public class FriendService {
         } else throw new FriendshipException("No Friendship found with this user: " + friendship.get().getStatusId());
     }
 
-    public void delete(Long id) {
-        Optional <Friendship> friendship = Optional.ofNullable(friendshipRepository.findByDstPersonId(id));
-        Optional<FriendshipStatus> friendshipStatus = friendshipStatusRepository
-                .findById(friendship.get().getStatusId());
-        if (friendship.isPresent()) {
-            friendshipStatusRepository.delete(friendshipStatus.get());
-            friendshipRepository.delete(friendship.get());
-        } else throw new FriendshipException("No Friendship found with this user: " + friendship.get().getStatusId());
-    }
-
-    public void blockFriend(Long id) {
-        Optional <Friendship> friendship = Optional.ofNullable(friendshipRepository
-                .findByDstPersonId(id));
-        Optional <FriendshipStatus> friendshipStatus = friendshipStatusRepository
-                .findById(friendship.get().getStatusId());
-        if (friendship.isPresent()){
-            friendshipStatus.get().setStatusCode(BLOCKED);
-            friendshipStatusRepository.save(friendshipStatus.get());
-        } else throw new FriendshipException("No Friendship found with this user: " + friendship.get().getStatusId());
-    }
-
     @Transactional
     public void sendFriendshipRequest(String email, Long id) {
         PersonDTO srcUser = personService.getPersonDTOByEmail(email);
@@ -93,16 +106,16 @@ public class FriendService {
                 .findByFriendshipStatusDstIdSrcId(REQUEST.toString(),id ,srcUser.getId()));
         if (friendship.isEmpty()){
             PersonDTO dstUser = personService.getPersonById(id);
-            createFriendshipStatus(dstUser.getFirstName(), dstUser.getLastName(), srcUser.getId(), id);
+            createFriendshipStatus(dstUser.getFirstName(), dstUser.getLastName(), srcUser.getId(), id, REQUEST);
         } else throw new FriendshipException("You've already sent a request to the user", HttpStatus.BAD_REQUEST);
 
     }
 
-    private void createFriendshipStatus(String firstName, String lastName, Long srcUserId, Long dstUserId){
+    private void createFriendshipStatus(String firstName, String lastName, Long srcUserId, Long dstUserId, FriendshipStatusCode code){
         FriendshipStatus friendshipStatus = FriendshipStatus.builder()
                 .time(new Date())
                 .name(firstName + " " + lastName)
-                .statusCode(REQUEST)
+                .statusCode(code)
                 .build();
         friendshipStatusRepository.save(friendshipStatus);
         createFriendship(friendshipStatus.getId(), srcUserId, dstUserId);
