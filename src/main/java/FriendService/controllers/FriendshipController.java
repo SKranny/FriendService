@@ -28,8 +28,8 @@ public class FriendshipController {
 
     @PutMapping("/block/{id}")
     @Operation(summary = "Блокировка друга")
-    public void blockFriend(@PathVariable Long id){
-        friendService.blockFriend(id);
+    public void blockFriend(TokenAuthentication authentication, @PathVariable Long id){
+        friendService.blockFriend(authentication.getTokenData().getEmail(), id);
     }
 
     @PostMapping("/{id}/request")
@@ -46,8 +46,8 @@ public class FriendshipController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Удаление друга")
-    public void delete(@PathVariable Long id){
-        friendService.delete(id);
+    public void delete(@PathVariable Long id, TokenAuthentication authentication){
+        friendService.delete(id, authentication.getTokenData().getEmail());
     }
 
     @GetMapping
