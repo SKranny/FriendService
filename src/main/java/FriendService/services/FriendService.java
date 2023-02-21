@@ -33,10 +33,12 @@ public class FriendService {
 
     public void approveFriendRequest(Long id, String email) {
         PersonDTO srcUser = personService.getPersonDTOByEmail(email);
-        Optional<Friendship> friendship = getFriendship(REQUEST.toString(), srcUser.getId(), id);
-        if (friendship.isPresent()) {
-            updateFriendship(friendship.get(), FRIEND);
-        } else throw new FriendshipException("No Friendship found with this user: " + friendship.get().getStatusId());
+        Optional<Friendship> friendshipRequest = getFriendship(REQUEST.toString(), srcUser.getId(), id);
+        Optional<Friendship> friendshipFriend = getFriendship(FRIEND.toString(), srcUser.getId(), id);
+        if (friendshipRequest.isPresent() && friendshipFriend.isEmpty()) {
+            updateFriendship(friendshipRequest.get(), FRIEND);
+        } else throw new FriendshipException("No Friendship request found with this user: " +
+                friendshipRequest.get().getStatusId(), HttpStatus.BAD_REQUEST);
         Optional<Friendship> friendship2 = getFriendship(REQUEST.toString(),srcUser.getId(), id);
         if (friendship2.isPresent()) {
             updateFriendship(friendship2.get(), FRIEND);
