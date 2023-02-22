@@ -4,17 +4,22 @@ import FriendService.constants.FriendshipStatusCode;
 import FriendService.dto.FriendDTO;
 import FriendService.dto.FriendNameDTO;
 import FriendService.feign.PersonService;
+import constants.NotificationType;
+import dto.friendDto.FriendsNotificationRequest;
+import dto.notification.ContentDTO;
 import dto.userDto.PersonDTO;
 import FriendService.exceptions.FriendshipException;
 import FriendService.model.Friendship;
 import FriendService.model.FriendshipStatus;
 import FriendService.repositories.FriendshipRepository;
 import FriendService.repositories.FriendshipStatusRepository;
+import kafka.annotation.SubmitToKafka;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -131,6 +136,7 @@ public class FriendService {
                 .srcPersonId(srcUserId)
                 .build();
         friendshipRepository.save(friendship);
+        createNotification(friendship);
     }
 
     public List<FriendDTO> getAllFriends(String email) {
@@ -235,6 +241,19 @@ public class FriendService {
         FriendshipStatus friendshipStatus = friendshipStatusRepository.findById(friendship.getStatusId()).get();
         friendshipRepository.delete(friendship);
         friendshipStatusRepository.delete(friendshipStatus);
+    }
+
+    @SubmitToKafka(topic = "Friends")
+    private FriendsNotificationRequest createNotification(Friendship friendship){
+        return FriendsNotificationRequest.builder()
+                .authorId(friendship.getSrcPersonId())
+                .recipientId(friendship.getDstPersonId())
+                .content(ContentDTO.builder()
+                        .text("")
+                        .attaches(new ArrayList<>())
+                        .build())
+                .type(NotificationType.FRIEND_REQUEST)
+                .build();
     }
 
 }
