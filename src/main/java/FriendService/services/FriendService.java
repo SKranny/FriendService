@@ -187,8 +187,8 @@ public class FriendService {
     @SubmitToKafka(topic = "Friends")
     private FriendsNotificationRequest createNotification(Friendship friendship){
         return FriendsNotificationRequest.builder()
-                .srcPersonId(friendship.getSrcPersonId())
-                .dstPersonId(friendship.getDstPersonId())
+                .authorId(friendship.getSrcPersonId())
+                .recipientId(friendship.getDstPersonId())
                 .content(ContentDTO.builder()
                         .text("")
                         .attaches(new ArrayList<>())
