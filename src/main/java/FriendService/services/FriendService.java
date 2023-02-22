@@ -2,8 +2,9 @@ package FriendService.services;
 
 import FriendService.constants.FriendshipStatusCode;
 import FriendService.dto.FriendDTO;
-import FriendService.dto.FriendsNotificationRequest;
 import FriendService.feign.PersonService;
+import constants.NotificationType;
+import dto.friendDto.FriendsNotificationRequest;
 import dto.notification.ContentDTO;
 import dto.userDto.PersonDTO;
 import FriendService.exceptions.FriendshipException;
@@ -192,6 +193,7 @@ public class FriendService {
                         .text("")
                         .attaches(new ArrayList<>())
                         .build())
+                .type(NotificationType.FRIEND_REQUEST)
                 .build();
     }
 
