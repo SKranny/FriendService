@@ -109,12 +109,24 @@ public class FriendService {
     @Transactional
     public void sendFriendshipRequest(String email, Long id) {
         PersonDTO srcUser = personService.getPersonDTOByEmail(email);
-        Optional <Friendship> friendship = Optional.ofNullable(friendshipRepository
-                .findByFriendshipStatusDstIdSrcId(REQUEST.toString(),id ,srcUser.getId()));
-        if (friendship.isEmpty()){
+        if (!isFriendOrRequested(srcUser.getId(), id)){
             PersonDTO dstUser = personService.getPersonById(id);
             createFriendshipStatus(dstUser.getFirstName(), dstUser.getLastName(), srcUser.getId(), id, REQUEST);
         } else throw new FriendshipException("You've already sent a request to the user", HttpStatus.BAD_REQUEST);
+
+    }
+
+    private Boolean isFriendOrRequested(Long srcUserId, Long dstUserId){
+        Optional <Friendship> friendRequest1 = Optional.ofNullable(friendshipRepository
+                .findByFriendshipStatusDstIdSrcId(REQUEST.toString(), srcUserId, dstUserId));
+        Optional <Friendship> friendRequest2 = Optional.ofNullable(friendshipRepository
+                .findByFriendshipStatusDstIdSrcId(REQUEST.toString(), dstUserId, srcUserId));
+        Optional <Friendship> friendship1 = Optional.ofNullable(friendshipRepository
+                .findByFriendshipStatusDstIdSrcId(FRIEND.toString(), srcUserId, dstUserId));
+        Optional <Friendship> friendship2 = Optional.ofNullable(friendshipRepository
+                .findByFriendshipStatusDstIdSrcId(FRIEND.toString(), dstUserId, srcUserId));
+
+        return friendRequest1.isPresent() || friendRequest2.isPresent() || friendship1.isPresent() || friendship2.isPresent();
 
     }
 
