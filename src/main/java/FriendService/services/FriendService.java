@@ -111,7 +111,7 @@ public class FriendService {
 
     }
 
-    private Boolean isFriendOrRequested(Long srcUserId, Long dstUserId){
+    private Boolean isFriendOrRequested(Long srcUserId, Long dstUserId) {
         Optional <Friendship> friendRequest1 = Optional.ofNullable(friendshipRepository
                 .findByFriendshipStatusDstIdSrcId(REQUEST.toString(), srcUserId, dstUserId));
         Optional <Friendship> friendRequest2 = Optional.ofNullable(friendshipRepository
@@ -121,8 +121,8 @@ public class FriendService {
         Optional <Friendship> friendship2 = Optional.ofNullable(friendshipRepository
                 .findByFriendshipStatusDstIdSrcId(FRIEND.toString(), dstUserId, srcUserId));
 
-        return friendRequest1.isPresent() || friendRequest2.isPresent() || friendship1.isPresent() || friendship2.isPresent();
-
+        return friendRequest1.isPresent() || friendRequest2.isPresent()
+                || friendship1.isPresent() || friendship2.isPresent();
     }
 
     private void createFriendshipStatus(String firstName, String lastName, Long srcUserId, Long dstUserId, FriendshipStatusCode code){
