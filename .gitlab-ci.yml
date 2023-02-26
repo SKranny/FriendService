@@ -41,6 +41,7 @@ package:
             - ./target
             - ./.m2
 
+
 build_and_push_image:
     image: docker:stable
     stage: build and push image
