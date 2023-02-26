@@ -104,11 +104,12 @@ public class FriendService {
     @Transactional
     public void sendFriendshipRequest(String email, Long id) {
         PersonDTO srcUser = personService.getPersonDTOByEmail(email);
-        if (!isFriendOrRequested(srcUser.getId(), id)){
-            PersonDTO dstUser = personService.getPersonById(id);
-            createFriendshipStatus(dstUser.getFirstName(), dstUser.getLastName(), srcUser.getId(), id, REQUEST);
-        } else throw new FriendshipException("You've already sent a request to the user", HttpStatus.BAD_REQUEST);
-
+        if (srcUser.getId() != id){
+            if (!isFriendOrRequested(srcUser.getId(), id)){
+                PersonDTO dstUser = personService.getPersonById(id);
+                createFriendshipStatus(dstUser.getFirstName(), dstUser.getLastName(), srcUser.getId(), id, REQUEST);
+            } else throw new FriendshipException("You've already sent a request to the user", HttpStatus.BAD_REQUEST);
+        } else throw new FriendshipException("You can't send a friend request to yourself ", HttpStatus.BAD_REQUEST);
     }
 
     private Boolean isFriendOrRequested(Long srcUserId, Long dstUserId) {
