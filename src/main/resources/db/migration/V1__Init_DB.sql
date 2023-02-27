@@ -1,5 +1,3 @@
-CREATE SEQUENCE friendship_id_seq START 1;
-
 CREATE TABLE IF NOT EXISTS friendship(
     id                         BIGSERIAL,
     status_id                  BIGINT NOT NULL,
