@@ -16,8 +16,8 @@ import java.util.Date;
 public class FriendshipStatus {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "fstatus_id_gen")
-    @SequenceGenerator(name = "fstatus_id_gen", sequenceName = "fstatus_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "friendship_id_gen")
+    @SequenceGenerator(name = "friendship_id_gen", sequenceName = "friendship_id_seq", allocationSize = 1)
     @Column(name = "id")
     private Long id;
 

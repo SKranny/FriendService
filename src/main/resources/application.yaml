@@ -6,7 +6,7 @@ spring:
   datasource:
     password: ${DB_PASSWORD}
     username: postgres
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/friend-service}
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/friend_service}
     driver-class-name: org.postgresql.Driver
   jpa:
     database: postgresql
