@@ -1,0 +1,31 @@
+server:
+  port: ${SERVER_PORT:8086}
+spring:
+  application:
+    name: friend-service
+  datasource:
+    password: ${DB_PASSWORD}
+    username: postgres
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/friend_service}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQL10Dialect
+    hibernate:
+      ddl-auto: none
+  kafka:
+    consumer:
+      group-id: friend-service-id
+    bootstrap-servers: ${KAFKA_HOST:localhost:9092}
+jwt:
+  secret-code: ${SECRET_KEY}
+eureka:
+  instance:
+    leaseRenewalIntervalInSeconds: 5
+    lease-expiration-duration-in-seconds: 5
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://localhost:8081/eureka}
+springdoc:
+  swagger-ui:
+    path: /docs/
