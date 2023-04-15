@@ -13,9 +13,13 @@ Within this service, friendships are created between users and a list of possibl
 - Flyway
 - Lombok
 - Mapstruct
-- Swagger OpenApi
+- Spring Data JPA
 - PostgreSQL
 - Spring Security
 - Spring Cloud OpenFeign
+- Spring Cloud Netflix Eureka
 - JWT(JsonWebToken)
 - Nexus repository
+- Swagger OpenApi
+
+### Technical description
