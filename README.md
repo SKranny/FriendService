@@ -1,5 +1,5 @@
 # Java Spring project "Social networking site"
-Friend-service
+### Friend-service
 
 ## Description
 
