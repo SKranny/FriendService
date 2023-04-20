@@ -20,6 +20,7 @@ Within this service, friendships are created between users and a list of possibl
 - Spring Cloud Netflix Eureka
 - JWT(JsonWebToken)
 - Nexus repository
+- Kafka
 - Swagger OpenApi
 
 ## Technical description
