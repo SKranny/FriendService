@@ -30,6 +30,7 @@ Within this service, friendships are created between users and a list of possibl
     - SERVER_PORT (The port of your application. Specify it manually if you are not going to use the default port: 8086)
     - DB_PASSWORD (Password for the database)
     - DB_URL (The address of the database your application connects to. You should specify it manually if you are not going to use default postgresql url: jdbc:postgresql://localhost:5432/friend_service)
+    - KAFKA_HOST(The address of the Kafka broker. The default host is localhost:9092. Replace it if you are not going to use the default)
     - SECRET_KEY (Your application's secret key. This is needed to protect your service which uses JWT technology)
     - EUREKA_URI (Address of your Eureka server. Specify it if you are not going to use the default address: http://localhost:8081/eureka )
 2. Run the file FriendApp.java.
