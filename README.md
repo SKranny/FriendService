@@ -22,6 +22,7 @@ Within this service, friendships are created between users and a list of possibl
 - Nexus repository
 - Kafka
 - Swagger OpenApi
+- JUnit
 
 ## Technical description
 ### How to run the application on your device:
