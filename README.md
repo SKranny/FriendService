@@ -34,3 +34,5 @@ Within this service, friendships are created between users and a list of possibl
     - SECRET_KEY (Your application's secret key. This is needed to protect your service which uses JWT technology)
     - EUREKA_URI (Address of your Eureka server. Specify it if you are not going to use the default address: http://localhost:8081/eureka )
 2. Run the file FriendApp.java.
+
+If you want to see the full functionality of the service go to the controllers folder inside the project, where each method will have a brief description of its functionality.
